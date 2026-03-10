@@ -45,7 +45,12 @@ div.stButton > button:hover {
 """, unsafe_allow_html=True)
 
 # ---------------- HEADER & CONTROLS ----------------
-st.markdown("## TRAINFLOW <span style='font-weight:300; color:#64748b;'>PREMIUM</span>", unsafe_allow_html=True)
+st.markdown("""
+<h2 style="margin-bottom:0;">TRAINFLOW <span style='font-weight:300; color:#64748b;'>PREMIUM</span></h2>
+<p style="margin-top:0; color:#94a3b8; font-size:14px;">
+AI Powered Real Time Train Crowd Monitoring & Smart Boarding Recommendation
+</p>
+""", unsafe_allow_html=True)
 c1, c2, c3 = st.columns([2, 1, 1])
 with c1: selected_train = st.selectbox("", ["12625 Kerala Express", "16347 Mangalore Express"], label_visibility="collapsed")
 with c2: performance_mode = st.checkbox("Performance Mode (Data Only)")
