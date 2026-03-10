@@ -1,10 +1,10 @@
-#OmniRail: GS Occupancy Monitor
+# OmniRail: GS Occupancy Monitor
 OmniRail is a real-time monitoring system designed to track passenger density in General Compartment (GS) coaches. Using computer vision and deep learning, the platform provides station operators with live occupancy data, assisting in crowd management and boarding efficiency.
 
-##Project Overview
+## Project Overview
 General compartments often experience unpredictable passenger density. This project automates the monitoring process by analyzing platform or coach video feeds to determine the occupancy level in real-time. By providing visual and numerical metrics, the system enables more informed decision-making for station staff.
 
-##Technical Specifications
+## Technical Specifications
 Core Engine: YOLOv8 Object Detection
 
 Framework: Streamlit (Python)
