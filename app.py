@@ -5,7 +5,7 @@ import time
 from datetime import datetime
 
 # ---------------- CONFIG ----------------
-st.set_page_config(page_title="TrainFlow Global", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="TrainFlow", layout="wide", initial_sidebar_state="collapsed")
 
 # ---------------- CSS STYLING ----------------
 st.markdown("""
