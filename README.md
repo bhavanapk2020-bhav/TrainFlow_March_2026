@@ -15,7 +15,7 @@ Latency: ~42ms (optimized for real-time analysis)
 
 UI: Custom CSS-based dark mode dashboard
 
-##Key Features
+## Key Features
 Multi-Unit Monitoring: Tracks up to three GS units simultaneously to provide a holistic view of the train.
 
 Density Analytics: Calculates the occupancy percentage and identifies the least crowded GS unit.
