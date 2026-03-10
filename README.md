@@ -1,4 +1,4 @@
-# TrainFlow: AI Powered Real Time Train Crowd Monitoring Intelligence
+# TrainFlow : AI Powered Real Time Train Crowd Monitoring Intelligence
 TrainFlow is a real-time monitoring system designed to track passenger density in General Compartment (GS) coaches. Using computer vision and deep learning, the platform provides station operators with live occupancy data, assisting in crowd management and boarding efficiency.
 
 ## Project Overview
