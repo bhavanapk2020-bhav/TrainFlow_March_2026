@@ -5,143 +5,251 @@ import time
 from datetime import datetime
 
 # ---------------- CONFIG ----------------
-st.set_page_config(page_title="TrainFlow", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="TrainFlow Premium", layout="wide", initial_sidebar_state="collapsed")
+
+# Initialize Session State for Page Navigation
+if 'page' not in st.session_state:
+    st.session_state.page = 'landing'
+
+def go_to_dashboard():
+    st.session_state.page = 'dashboard'
+
+def go_to_landing():
+    st.session_state.page = 'landing'
 
 # ---------------- CSS STYLING ----------------
 st.markdown("""
 <style>
-    [data-testid="block-container"] { padding-top: 1rem; padding-bottom: 5rem; }
+    [data-testid="block-container"] { padding-top: 2rem; padding-bottom: 5rem; }
     div[data-testid="stNotification"] { display: none; }
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
 
-    .stApp { background: radial-gradient(circle at 20% 10%, #0f172a 0%, #020617 100%); color: #e2e8f0; font-family: 'Outfit', sans-serif; }
+    /* Global Background */
+    .stApp { 
+        background-color: #ffffff;
+        color: #f8fafc; 
+        font-family: 'Outfit', sans-serif; 
+    }
     
-    .metric-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 20px; margin-top: 10px; backdrop-filter: blur(10px); }
-    .progress-bg { background: #1e293b; height: 8px; border-radius: 4px; margin: 12px 0; overflow: hidden; }
-    .progress-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+    /* Landing Page Specific Styles */
+    .landing-hero {
+        text-align: center;
+        padding: 100px 20px;
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: 40px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+    }
+
+    /* Dashboard Glass Cards */
+    .metric-card { 
+        background: rgba(255, 255, 255, 0.02); 
+        border: 1px solid rgba(255, 255, 255, 0.08); 
+        border-radius: 24px; 
+        padding: 24px; 
+        margin-top: 15px; 
+        backdrop-filter: blur(12px);
+    }
+
+    .progress-bg { background: rgba(255,255,255,0.05); height: 6px; border-radius: 10px; margin: 15px 0; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 10px; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
     
-    .m-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: #64748b; }
-    .m-value { font-size: 1.2rem; font-weight: 700; color: #f8fafc; }
-    .c-low { color: #34d399; } .c-med { color: #fbbf24; } .c-high { color: #f87171; }
-
-    .footer-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(15, 23, 42, 0.95); padding: 10px 20px; display: flex; gap: 30px; border-top: 1px solid #334155; font-size: 0.75rem; color: #94a3b8; z-index: 1000; }
-    .prime-rec { background: linear-gradient(90deg, #0ea5e9, #2563eb); padding: 20px; border-radius: 15px; text-align: center; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3); }
+    .m-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; color: #94a3b8; font-weight: 500; }
+    .m-value { font-size: 1.4rem; font-weight: 800; color: #ffffff; }
     
-    .standby-box { text-align: center; padding: 100px 20px; border: 2px dashed rgba(255,255,255,0.1); border-radius: 20px; color: #94a3b8; }
+    .prime-rec { 
+        background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); 
+        padding: 25px; border-radius: 24px; text-align: center; 
+        margin-bottom: 2.5rem; box-shadow: 0 20px 40px rgba(37, 99, 235, 0.25);
+    }
+    
+    .hero-container {
+        position: relative; border-radius: 30px; overflow: hidden; height: 400px;
+        display: flex; align-items: center; justify-content: center;
+        background: url('https://images.unsplash.com/photo-1515165599668-93f4bd3932a2?q=80&w=2070&auto=format&fit=crop') center center;
+        background-size: cover; box-shadow: inset 0 0 0 1000px rgba(2, 6, 23, 0.7);
+    }
 
-            /* Style for START button */
-div.stButton > button:first-child {
-    background-color: white !important; /* Emerald Green */
-    color: black !important;
-    border: none !important;
-}
-
-/* Optional: Add hover effect for a premium feel */
-div.stButton > button:hover {
-    filter: brightness(1.2);
-    transition: 0.3s;
-}
+    /* Premium Button Styles */
+    div.stButton > button:first-child {
+        background: #020617 !important; 
+        color: #ffffff !important;
+        border-radius: 12px !important;
+        font-weight: 700 !important;
+        padding: 0.8rem 2.5rem !important;
+        border: none !important;
+        transition: 0.3s ease;
+    }
+    
+    /* Specific Black Button for Back action */
+    .custom-back-btn button {
+        background-color: #020617 !important;
+        color: #ffffff !important;
+        border: 1px solid #020617 !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
-# ---------------- HEADER & CONTROLS ----------------
-st.markdown("""
-<h2 style="margin-bottom:0;">TRAINFLOW <span style='font-weight:300; color:#64748b;'>PREMIUM</span></h2>
-<p style="margin-top:0; color:#94a3b8; font-size:14px;">
-AI Powered Real Time Train Crowd Monitoring & Smart Boarding Recommendation
-</p>
-""", unsafe_allow_html=True)
-c1, c2, c3 = st.columns([2, 1, 1])
-with c1: selected_train = st.selectbox("", ["12625 Kerala Express", "16347 Mangalore Express"], label_visibility="collapsed")
-with c2: performance_mode = st.checkbox("Performance Mode (Data Only)")
-with c3:
-    sc1, sc2 = st.columns(2)
-    start_trigger = sc1.button("START", use_container_width=True)
-    stop_trigger = sc2.button("STOP", use_container_width=True)
+# ---------------- NAVIGATION LOGIC ----------------
 
-st.markdown("---")
+if st.session_state.page == 'landing':
+    # ---------------- LANDING PAGE ----------------
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    st.markdown("""
+        <div class="landing-hero">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                <video width="80" autoplay loop muted playsinline>
+                    <source src="https://cdn-icons-mp4.flaticon.com/512/7308/7308523.mp4" type="video/mp4">
+                </video>
+                <h1 style="font-size: 5rem; font-weight: 800; margin-bottom: 0; letter-spacing: -3px;">
+                    <span style="color:#020617;">TRAIN<span style="color:#3b82f6;">FLOW</span>
+                </h1>
+            </div>
+            <p style="font-size: 1.5rem; font-weight: 300; color: #64748b; margin-top: -10px; font-style: italic;">
+                Board Smarter with AI
+            </p>
+            <p style="max-width: 700px; margin: 30px auto; color: #020617; line-height: 1.6;">
+                AI Powered Real Time Train Crowd Monitoring & Smart Boarding Recommendation
+            </p>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    col_btn_1, col_btn_2, col_btn_3 = st.columns([1, 1, 1])
+    with col_btn_2:
+        st.button("EXPLORE DASHBOARD", on_click=go_to_dashboard, use_container_width=True)
 
-# ---------------- LOGIC ----------------
-@st.cache_resource
-def get_model(): return YOLO("yolov8l.pt")
-model = get_model()
+    st.markdown("<br><br>", unsafe_allow_html=True)
 
-# Handle State Transition
-if not start_trigger:
-    st.markdown('<div class="standby-box"><h3>SYSTEM STANDBY</h3><p>Select a train and click START to initialize real-time monitoring.</p></div>', unsafe_allow_html=True)
 else:
-    # Build grid only when started
-    rec_slot = st.empty()
-    cols = st.columns(3, gap="large")
-    slots = []
-    for i in range(3):
-        with cols[i]:
-            st.markdown(f"<p style='margin-bottom:10px; font-weight:600; color:#94a3b8;'>UNIT GS-{i+1}</p>", unsafe_allow_html=True)
-            slots.append({"video": st.empty(), "metrics": st.empty()})
-
-    trains = {
-        "12625 Kerala Express": [r"C:\Users\ASUS\Desktop\DL_Projects\Train\Medium Crowd.mp4", r"C:\Users\ASUS\Desktop\DL_Projects\Train\Low Crowd.mp4", "Very Low.mp4"],
-        "16347 Mangalore Express": [r"C:\Users\ASUS\Desktop\DL_Projects\Train\AnotherCrowd.mp4", r"C:\Users\ASUS\Desktop\DL_Projects\Train\DifferentCrowd.mp4", r"C:\Users\ASUS\Desktop\DL_Projects\Train\SampleVideo.mp4"]
-    }
-    caps = [cv2.VideoCapture(p) for p in trains[selected_train]]
+    # ---------------- DASHBOARD PAGE ----------------
     
-    while True:
-        current_data = []
-        for i, cap in enumerate(caps):
-            ret, frame = cap.read()
-            if not ret: cap.set(cv2.CAP_PROP_POS_FRAMES, 0); continue
-            
-            res = model(frame, verbose=False, classes=[0])
-            people = len(res[0].boxes)
-            
-            occ = int(min((people / 30) * 100, 100))
-            c_label = "LOW" if occ < 20 else ("MEDIUM" if occ < 30 else "HIGH")
-            c_class = "c-low" if occ < 20 else ("c-med" if occ < 30 else "c-high")
-            bar_color = "#34d399" if occ < 20 else ("#fbbf24" if occ < 30 else "#f87171")
+    # 1. Back button in top-right
+    col1, col2 = st.columns([0.94, 0.06])
+    with col2:
+        st.markdown('<div class="custom-back-btn">', unsafe_allow_html=True)
+        if st.button("Back", help="Return to Home"):
+            go_to_landing()
+        st.markdown('</div>', unsafe_allow_html=True)
 
-            if not performance_mode:
-                annotated = res[0].plot(labels=False, boxes=True)
-                if occ > 70: cv2.putText(annotated, "ALERT: HIGH CAPACITY", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 3)
-                slots[i]["video"].image(annotated, channels="BGR", use_container_width=True)
-            else:
-                slots[i]["video"].empty()
-            
-            slots[i]["metrics"].markdown(f"""
-                <div class="metric-card">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                        <span class="m-label">Occupancy</span><span class="m-value">{occ}%</span>
-                    </div>
-                    <div class="progress-bg"><div class="progress-fill" style="width:{occ}%; background:{bar_color};"></div></div>
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top:10px;">
-                        <div><div class="m-label">Passengers</div><div class="m-value">{people}</div></div>
-                        <div><div class="m-label">Seats Avail</div><div class="m-value">{max(30 - people, 0)}</div></div>
-                    </div>
+    # 2. Main Dashboard Header
+    st.markdown("""
+    <div style="display: flex; align-items: center; margin-bottom: 2rem; margin-top: -80px;">
+        <div style="background: #ffffff; padding: 12px; border-radius: 16px; margin-right: 20px;">
+        <video width="80" autoplay loop muted playsinline>
+            <source src="https://cdn-icons-mp4.flaticon.com/512/7308/7308523.mp4" type="video/mp4">
+        </video>
+        </div>
+        <div>
+            <h2 style="margin:0; line-height:1; letter-spacing:-1px;">
+                <span style="font-weight:800; font-size: 2.5rem; color:#020617;">TRAIN<span style="color:#3b82f6;">FLOW</span></span>
+                <span style="font-weight:300; font-size: 2.5rem; color:#64748b; margin-left:10px;"><i>Board Smarter with AI</i></span>
+            </h2>
+            <p style="margin:0; color:#020617; font-weight:400; letter-spacing: 1px; font-size: 0.8rem;">AI Powered Real Time Train Crowd Monitoring & Smart Boarding Recommendation</p>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+
+    c1, c2, c3 = st.columns([2, 1, 1])
+    with c1: selected_train = st.selectbox("", ["12625 Kerala Express", "16347 Mangalore Express"], label_visibility="collapsed")
+    with c2: performance_mode = st.checkbox("Video")
+    with c3:
+        sc1, sc2 = st.columns(2)
+        start_trigger = sc1.button("START", use_container_width=True)
+        stop_trigger = sc2.button("STOP", use_container_width=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # ---------------- LOGIC ----------------
+    @st.cache_resource
+    def get_model(): return YOLO("yolov8l.pt")
+    model = get_model()
+
+    if not start_trigger:
+        st.markdown("""
+            <div class="hero-container">
+                <div style="text-align:center;">
+                    <h1 style="color:white; font-size: 3rem; margin-bottom: 0;">READY FOR DEPLOYMENT</h1>
+                    <p style="color:#94a3b8; font-size: 1.2rem;">Select train fleet to begin real-time neural analysis</p>
                 </div>
-            """, unsafe_allow_html=True)
-            current_data.append({"id": i+1, "count": people})
+            </div>
+        """, unsafe_allow_html=True)
+    else:
+        rec_slot = st.empty()
+        cols = st.columns(3, gap="large")
+        slots = []
+        for i in range(3):
+            with cols[i]:
+                st.markdown(f"""
+                    <div style="display: flex; align-items: center; margin-bottom: 15px; opacity: 0.8;">
+                        <div style="width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; margin-right: 10px;"></div>
+                        <span style="font-weight: 600; letter-spacing: 2px; font-size: 0.8rem; color: #94a3b8;">TERMINAL GS-{i+1}</span>
+                    </div>
+                """, unsafe_allow_html=True)
+                slots.append({"video": st.empty(), "metrics": st.empty()})
 
-        if current_data:
-            best = min(current_data, key=lambda x: x['count'])
-            rec_slot.markdown(f'<div class="prime-rec"><h2>OPTIMAL BOARDING: GS-{best["id"]}</h2></div>', unsafe_allow_html=True)
+        trains = {
+            "12625 Kerala Express": [r"C:\Users\ASUS\Desktop\DL_Projects\Train\Medium Crowd.mp4", r"C:\Users\ASUS\Desktop\DL_Projects\Train\Low Crowd.mp4", r"C:\Users\ASUS\Desktop\DL_Projects\Train\Very Low.mp4"],
+            "16347 Mangalore Express": [r"C:\Users\ASUS\Desktop\DL_Projects\Train\AnotherCrowd.mp4", r"C:\Users\ASUS\Desktop\DL_Projects\Train\DifferentCrowd.mp4", r"C:\Users\ASUS\Desktop\DL_Projects\Train\SampleVideo.mp4"]
+        }
+        caps = [cv2.VideoCapture(p) for p in trains[selected_train]]
+        
+        while True:
+            current_data = []
+            for i, cap in enumerate(caps):
+                ret, frame = cap.read()
+                if not ret: cap.set(cv2.CAP_PROP_POS_FRAMES, 0); continue
+                
+                res = model(frame, verbose=False, classes=[0])
+                people = len(res[0].boxes)
+                occ = int(min((people / 30) * 100, 100))
+                bar_color = "#10b981" if occ < 20 else ("#f59e0b" if occ < 30 else "#ef4444")
 
-        if stop_trigger:
-            for c in caps: c.release()
-            st.rerun()
-            break
-        time.sleep(0.01)
+                if not performance_mode:
+                    annotated = res[0].plot(labels=False, boxes=True)
+                    slots[i]["video"].image(annotated, channels="BGR", use_container_width=True)
+                else:
+                    slots[i]["video"].empty()
+                
+                slots[i]["metrics"].markdown(f"""
+                    <div class="metric-card">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+                            <div>
+                                <div class="m-label">Live Occupancy</div>
+                                <div class="m-value">{occ}%</div>
+                            </div>
+                            <div style="text-align:right;">
+                                <div class="m-label">Passengers</div>
+                                <div class="m-value" style="color:#3b82f6;">{people}</div>
+                            </div>
+                        </div>
+                        <div class="progress-bg"><div class="progress-fill" style="width:{occ}%; background:{bar_color}; box-shadow: 0 0 15px {bar_color}44;"></div></div>
+                        <div style="margin-top:10px;">
+                            <span class="m-label">Available Seats: </span>
+                            <span style="font-weight:700; color:#f8fafc;">{max(30 - people, 0)}</span>
+                        </div>
+                    </div>
+                """, unsafe_allow_html=True)
+                current_data.append({"id": i+1, "count": people})
 
-# Footer
-# 1. Create a placeholder at the bottom
-footer_slot = st.empty()
+            if current_data:
+                best = min(current_data, key=lambda x: x['count'])
+                rec_slot.markdown(f'<div class="prime-rec"><h2>OPTIMAL BOARDING UNIT: GS-{best["id"]}</h2></div>', unsafe_allow_html=True)
 
-# 2. Inside your while loop, update it:
-while True:
-    # ... your existing logic ...
-    
-    # 3. Refresh the footer with the new time
-    footer_slot.markdown(f"""
-    <div class="footer-bar">
-        <span>🟢 ACTIVE</span>
-        <span>⏰ {datetime.now().strftime("%H:%M:%S")}</span>
+            if stop_trigger:
+                for c in caps: c.release()
+                st.rerun()
+                break
+            time.sleep(0.01)
+
+    # Footer (Only on Dashboard)
+    st.markdown(f"""
+    <div style="position:fixed; bottom:0; left:0; width:100%; background:rgba(2,6,23,0.95); padding:15px 40px; border-top:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; font-size:0.8rem; color:#64748b; z-index:1000;">
+        <div style="display:flex; gap:30px;">
+            <span style="color:#10b981;">● SYSTEM ONLINE</span>
+            <span>ENCRYPTED STREAM: {selected_train if 'selected_train' in locals() else 'STANDBY'}</span>
+        </div>
+        <span>{datetime.now().strftime("%H:%M:%S")}</span>
     </div>
     """, unsafe_allow_html=True)
