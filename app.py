@@ -20,12 +20,24 @@ def go_to_landing():
 # ---------------- CSS STYLING ----------------
 st.markdown("""
 <style>
-    [data-testid="block-container"] { padding-top: 2rem; padding-bottom: 5rem; }
-    div[data-testid="stNotification"] { display: none; }
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
 
+    /* Hides the default Streamlit header/menu space */
+    #stHeader {
+        display: none !important;
+    }
+
+    [data-testid="block-container"] {
+        padding-top: 0rem !important; /* Change 1rem to 0rem for zero padding */
+        padding-bottom: 0rem !important;
+    }
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+    
+    /* Optional: Hide the default header/menu if you want even more space */
+        #stHeader { display: none !important; }
+    
     /* Global Background */
     .stApp { 
+        margin-top: 0px !important;
         background-color: #ffffff;
         color: #f8fafc; 
         font-family: 'Outfit', sans-serif; 
@@ -54,14 +66,20 @@ st.markdown("""
     .progress-bg { background: rgba(255,255,255,0.05); height: 6px; border-radius: 10px; margin: 15px 0; overflow: hidden; }
     .progress-fill { height: 100%; border-radius: 10px; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
     
-    .m-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; color: #94a3b8; font-weight: 500; }
-    .m-value { font-size: 1.4rem; font-weight: 800; color: #ffffff; }
+    .m-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; color: #020617; font-weight: 500; }
+    .m-value { font-size: 1.4rem; font-weight: 800; color: black; }
     
     .prime-rec { 
-        background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); 
-        padding: 25px; border-radius: 24px; text-align: center; 
-        margin-bottom: 2.5rem; box-shadow: 0 20px 40px rgba(37, 99, 235, 0.25);
-    }
+    background: transparent !important; /* Removes the color/gradient */
+    border: 0.2px solid #088F8F !important; /* Adds a clear outline */
+    color: #0f172a !important; /* Changes text to dark for readability */
+    padding: 5px; 
+    border-radius: 5px; 
+    text-align: center; 
+    margin-bottom: 1rem; 
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.4) !important; 
+    
+}
     
     .hero-container {
         position: relative; border-radius: 30px; overflow: hidden; height: 400px;
@@ -72,7 +90,7 @@ st.markdown("""
 
     /* Premium Button Styles */
     div.stButton > button:first-child {
-        background: #020617 !important; 
+        background: #088F8F !important; 
         color: #ffffff !important;
         border-radius: 12px !important;
         font-weight: 700 !important;
@@ -102,7 +120,7 @@ if st.session_state.page == 'landing':
                     <source src="https://cdn-icons-mp4.flaticon.com/512/7308/7308523.mp4" type="video/mp4">
                 </video>
                 <h1 style="font-size: 5rem; font-weight: 800; margin-bottom: 0; letter-spacing: -3px;">
-                    <span style="color:#020617;">TRAIN<span style="color:#3b82f6;">FLOW</span>
+                    <span style="color:#020617;">TRAIN<span style="color:#088F8F;">FLOW</span>
                 </h1>
             </div>
             <p style="font-size: 1.5rem; font-weight: 300; color: #64748b; margin-top: -10px; font-style: italic;">
@@ -142,7 +160,7 @@ else:
         </div>
         <div>
             <h2 style="margin:0; line-height:1; letter-spacing:-1px;">
-                <span style="font-weight:800; font-size: 2.5rem; color:#020617;">TRAIN<span style="color:#3b82f6;">FLOW</span></span>
+                <span style="font-weight:800; font-size: 2.5rem; color:#020617;">TRAIN<span style="color:#088F8F;">FLOW</span></span>
                 <span style="font-weight:300; font-size: 2.5rem; color:#64748b; margin-left:10px;"><i>Board Smarter with AI</i></span>
             </h2>
             <p style="margin:0; color:#020617; font-weight:400; letter-spacing: 1px; font-size: 0.8rem;">AI Powered Real Time Train Crowd Monitoring & Smart Boarding Recommendation</p>
@@ -153,7 +171,7 @@ else:
 
     c1, c2, c3 = st.columns([2, 1, 1])
     with c1: selected_train = st.selectbox("", ["12625 Kerala Express", "16347 Mangalore Express"], label_visibility="collapsed")
-    with c2: performance_mode = st.checkbox("Video")
+    with c2: performance_mode = st.checkbox("Video Off")
     with c3:
         sc1, sc2 = st.columns(2)
         start_trigger = sc1.button("START", use_container_width=True)
@@ -183,8 +201,8 @@ else:
             with cols[i]:
                 st.markdown(f"""
                     <div style="display: flex; align-items: center; margin-bottom: 15px; opacity: 0.8;">
-                        <div style="width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; margin-right: 10px;"></div>
-                        <span style="font-weight: 600; letter-spacing: 2px; font-size: 0.8rem; color: #94a3b8;">TERMINAL GS-{i+1}</span>
+                        <div style="width: 8px; height: 8px; background: #020617; border-radius: 50%; margin-right: 10px;"></div>
+                        <span style="font-weight: 600; letter-spacing: 2px; font-size: 0.8rem; color: #94a3b8;">COMPARTMENT GS-{i+1}</span>
                     </div>
                 """, unsafe_allow_html=True)
                 slots.append({"video": st.empty(), "metrics": st.empty()})
@@ -221,13 +239,13 @@ else:
                             </div>
                             <div style="text-align:right;">
                                 <div class="m-label">Passengers</div>
-                                <div class="m-value" style="color:#3b82f6;">{people}</div>
+                                <div class="m-value" style="color:#088F8F;">{people}</div>
                             </div>
                         </div>
                         <div class="progress-bg"><div class="progress-fill" style="width:{occ}%; background:{bar_color}; box-shadow: 0 0 15px {bar_color}44;"></div></div>
                         <div style="margin-top:10px;">
                             <span class="m-label">Available Seats: </span>
-                            <span style="font-weight:700; color:#f8fafc;">{max(30 - people, 0)}</span>
+                            <span style="font-weight:700; color:#020617;">{max(30 - people, 0)}</span>
                         </div>
                     </div>
                 """, unsafe_allow_html=True)
@@ -245,10 +263,10 @@ else:
 
     # Footer (Only on Dashboard)
     st.markdown(f"""
-    <div style="position:fixed; bottom:0; left:0; width:100%; background:rgba(2,6,23,0.95); padding:15px 40px; border-top:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; font-size:0.8rem; color:#64748b; z-index:1000;">
+    <div style="position:fixed; bottom:0; left:0; width:100%; background:#ffffff; padding:15px 40px; border-top:1px solid rgba(0,0,0,0.05); display:flex; justify-content:space-between; font-size:0.8rem; color:#64748b; z-index:1000;">
         <div style="display:flex; gap:30px;">
             <span style="color:#10b981;">● SYSTEM ONLINE</span>
-            <span>ENCRYPTED STREAM: {selected_train if 'selected_train' in locals() else 'STANDBY'}</span>
+            <span>TRAIN : {selected_train if 'selected_train' in locals() else 'STANDBY'}</span>
         </div>
         <span>{datetime.now().strftime("%H:%M:%S")}</span>
     </div>
